@@ -5,25 +5,40 @@ import config from '../config';
 
 @Global()
 @Module({
-    imports: [
-        TypeOrmModule.forRootAsync({
-            inject: [config.KEY],
-            useFactory: (configType: ConfigType<typeof config>) => {
-                const { user, host, name, password, port } = configType.dataBase;
-                return {
-                    type: 'postgres',
-                    host,
-                    port,
-                    username: user,
-                    password,
-                    database: name,
-                    synchronize: process.env.NODE_ENV === 'dev',
-                    autoLoadEntities: true,
-                };
+  imports: [
+    TypeOrmModule.forRootAsync({
+      inject: [config.KEY],
+      useFactory: (configType: ConfigType<typeof config>) => {
+        const { url, user, host, name, password, port } = configType.dataBase;
+
+        // Si existe DATABASE_URL (Neon / Render)
+        if (url) {
+          return {
+            type: 'postgres',
+            url,
+            synchronize: process.env.NODE_ENV === 'dev',
+            autoLoadEntities: true,
+            ssl: {
+              rejectUnauthorized: false, // Obligatorio para la conexión SSL de Neon
             },
-        }),
-    ],
-    providers: [],
-    exports: [TypeOrmModule],
+          };
+        }
+
+        // Si se usan variables independientes (Postgres local / Docker)
+        return {
+          type: 'postgres',
+          host,
+          port,
+          username: user,
+          password,
+          database: name,
+          synchronize: process.env.NODE_ENV === 'dev',
+          autoLoadEntities: true,
+        };
+      },
+    }),
+  ],
+  providers: [],
+  exports: [TypeOrmModule],
 })
-export class DatabaseModule { }
+export class DatabaseModule {}
