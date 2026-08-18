@@ -16,8 +16,8 @@ import config from '../config';
           return {
             type: 'postgres',
             url,
-            synchronize: process.env.NODE_ENV === 'dev',
-            autoLoadEntities: true,
+            synchronize: false,
+            autoLoadEntities: false,
             ssl: {
               rejectUnauthorized: false, // Obligatorio para la conexión SSL de Neon
             },
@@ -32,8 +32,8 @@ import config from '../config';
           username: user,
           password,
           database: name,
-          synchronize: process.env.NODE_ENV === 'dev',
-          autoLoadEntities: true,
+          synchronize:false,
+          autoLoadEntities:false,
         };
       },
     }),
