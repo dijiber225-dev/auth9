@@ -17,7 +17,7 @@ import config from '../config';
             type: 'postgres',
             url,
             synchronize: false,
-            autoLoadEntities: false,
+            autoLoadEntities: true,
             ssl: {
               rejectUnauthorized: false, // Obligatorio para la conexión SSL de Neon
             },
@@ -33,7 +33,7 @@ import config from '../config';
           password,
           database: name,
           synchronize:false,
-          autoLoadEntities:false,
+          autoLoadEntities:true,
         };
       },
     }),
