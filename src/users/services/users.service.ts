@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { Repository } from 'typeorm';
+import { CreateUserDto } from '../dtos/create-user.dto';
+import { UpdateUserDto } from '../dtos/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -10,44 +12,59 @@ export class UsersService {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  // Consulta simple a la BD usando la entidad
+  // GET /users
   async findAll(): Promise<User[]> {
     return await this.userRepository.find();
   }
 
+  // POST /users
+  async create(data: CreateUserDto): Promise<User> {
+    return await this.userRepository.save(data);
+  }
 
- // Crear un nuevo usuario
-async create(data: any): Promise<User> {
-  return await this.userRepository.save(data);
-}
-
-
-  // Buscar un usuario específico por su ID
+  // GET /users/:id
   async findOne(id: string): Promise<User> {
     const user = await this.userRepository.findOneBy({ id });
+
     if (!user) {
-      throw new NotFoundException(`Usuario con ID ${id} no encontrado`);
+      throw new NotFoundException(
+        `Usuario con ID ${id} no encontrado`,
+      );
     }
+
     return user;
   }
 
-  // Actualizar datos de un usuario existente
-  async update(id: number, changes: any): Promise<User> {
+  // PATCH /users/:id
+ async update(
+  id: string,
+  changes: UpdateUserDto,
+): Promise<User> {
     const user = await this.userRepository.preload({
-      id: id,
+      id,
       ...changes,
     });
+
     if (!user) {
-      throw new NotFoundException(`Usuario con ID ${id} no se pudo actualizar porque no existe`);
+      throw new NotFoundException(
+        `Usuario con ID ${id} no se pudo actualizar porque no existe`,
+      );
     }
+
     return await this.userRepository.save(user);
   }
 
-  // Eliminar un usuario de la BD
-  async remove(id: string): Promise<{ deleted: boolean; id: string }> {
-    const user = await this.findOne(id); // Reutiliza findOne para validar si existe
+  // DELETE /users/:id
+  async remove(
+    id: string,
+  ): Promise<{ deleted: boolean; id: string }> {
+    const user = await this.findOne(id);
+
     await this.userRepository.remove(user);
-    return { deleted: true, id };
+
+    return {
+      deleted: true,
+      id,
+    };
   }
 }
-
