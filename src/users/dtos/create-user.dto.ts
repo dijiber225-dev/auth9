@@ -20,6 +20,16 @@ export class CreateUserDto {
   name!: string;
 
   @ApiProperty({
+    example: '321456987',
+    description: 'Nombre completo del usuario',
+    maxLength: 100,
+  })
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  telefono!: string;
+
+  @ApiProperty({
     example: 'juan@gmail.com',
     description: 'Correo electrónico único del usuario',
     maxLength: 150,
