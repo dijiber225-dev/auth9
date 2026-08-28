@@ -14,7 +14,10 @@ export class User {
   @Column({ type: 'varchar', length: 100 })
   name!: string;
 
-  @Column({ type: 'varchar', length: 150, unique: true })
+  @Column({ type: 'varchar', length: 100 })
+  telefono!: string;
+
+  @Column({ type: 'varchar', length: 150, unique: true, default: 'valor_por_defecto' })
   email!: string;
 
   @Column({ type: 'varchar', length: 255, select: false })
