@@ -14,7 +14,7 @@ export class User {
   @Column({ type: 'varchar', length: 100 })
   name!: string;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: 100, default: 'valor_por_defecto' })
   telefono!: string;
 
   @Column({ type: 'varchar', length: 150, unique: true, default: 'valor_por_defecto' })
